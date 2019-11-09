@@ -97,6 +97,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="409dp"
         android:layout_height="59dp"
         android:layout_marginTop="1dp"
@@ -121,9 +122,12 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        />
+        android:id="@android:id/list"
+        android:layout_width="407dp"
+        android:layout_height="341dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

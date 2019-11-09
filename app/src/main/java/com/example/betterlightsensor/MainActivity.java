@@ -2,23 +2,27 @@ package com.example.betterlightsensor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ListActivity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends ListActivity implements View.OnClickListener {
     TextView textLIGHT_available, textLIGHT_reading;
     private int xTickValues = 0;
     LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button stop, start;
     private SensorManager mySensorManager;
     private Sensor lightSensor;
+    private ListView list;
+    ArrayList<String> listItems=new ArrayList<String>();
+    ArrayAdapter<String> adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mySensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
+        adapter=new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                listItems);
+        setListAdapter(adapter);
+
         lightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         if(lightSensor != null){
             textLIGHT_available.setText("Sensor.TYPE_LIGHT Available");
@@ -68,10 +80,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+    public void addItems(View v) {
+        listItems.add("Tick : "+xTickValues+" Intensity : "+sensor_value);
+        adapter.notifyDataSetChanged();
+    }
+    public void removeItems(View v) {
+        listItems.clear();
+        adapter.notifyDataSetChanged();
+    }
+
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()){
             case R.id.start:
+                removeItems(list);
                 xTickValues = 0;
                 series.resetData(new DataPoint[]{
                         new DataPoint(xTickValues, sensor_value)
@@ -100,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sensor_value = event.values[0];
                 textLIGHT_reading.setText("LIGHT: " + sensor_value);
                 series.appendData(new DataPoint(xTickValues, sensor_value),true,50);
+                addItems(list);
                 xTickValues += 1;
             }
         }
